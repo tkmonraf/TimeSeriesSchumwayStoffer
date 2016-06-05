@@ -2,6 +2,7 @@
 
 library(astsa)
 library(xts)
+library(ggplot2)
 
 #Problem 2.1 Johnson and Johnson Data
 # Let x_t = log(y_t)
@@ -93,4 +94,54 @@ for(i in 1:6){
   abline(reg,col =3)
   }
 
-#Q4
+#Q8: varve Glacial temperatures
+
+#a) Argue x_t exhibits heteroscedasticity by comparing first half 
+#sample var to second half sample var
+
+n <- length(varve)
+varve.first <- varve[1:round(n/2)]
+varve.second <- varve[(round(n/2)+1):n]
+
+sd(varve.first)-sd(varve.second)
+#varve.second > varve.first therefore exhibits heteroscedasticity
+
+#Does the log transform change this assumption
+
+log.varve.first <- log(varve.first)
+log.varve.second <- log(varve.second)
+
+sd(log.varve.first)-sd(log.varve.second)
+
+#Much less evidence of heteroscedasticity
+
+#Compare histograms
+
+qplot(log(varve),geom="histogram")
+qplot(varve,geom="histogram")
+
+#much more normal after log transform
+
+#b) Plot y_t. Do any time intervals exhibit similar behaviour to Fig1.2
+plot(log(varve))
+
+#Behavior for first half of histogram is somewhat similar. 
+
+#c)Examine the sample acf of y_t and comment
+
+acf(log(varve))
+#There is correaltion between the different lags of the series
+
+#d) Examine differenced series of y, u_t = y_t-t_(t-1)?
+
+u <- diff(log(varve))
+
+#plot u
+plot(u)
+
+#Examine acf of u
+
+acf(u)
+
+#What is the practical interpretation of u_t? 
+#THe percentage difference between the spots
