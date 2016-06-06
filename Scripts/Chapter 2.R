@@ -145,3 +145,53 @@ acf(u)
 
 #What is the practical interpretation of u_t? 
 #THe percentage difference between the spots
+
+#f) Calculate sigma^2 and theta
+
+theta_1 <- (-1000/397+sqrt((1000/397)^2-4))/2
+theta_2 <- (-1000/397-sqrt((1000/397)^2-4))/2
+
+theta_1
+theta_2
+
+sigma_1 <- -0.132/(1+theta_1^2)
+sigma_2 <- -0.132/(1+theta_2^2)
+
+sigma_1
+sigma_2
+
+#Q9: Explore periodic nature of S_t, the SOI series in Figure 1.5
+
+#a) Detrend the series by fitting a regression of S_t on t, time. 
+
+S <- soi
+#time(S) #monthly time series
+w <- 1/frequency(S)  #Set frequency
+
+t <- 1:length(S)/w
+
+#We can model like so: x_t = A*cos(2*pi*w*t+phi)+w_t
+#We want to find A and phi
+#set b_1 = Acos(phi), b_2 = -Asin(phi)
+
+#The model we are fitting is as follows:
+# x_t = b_1 * cos(2*pi*w*t) + b_2 * sin(2*pi*w*t) + w_t
+
+z1 <- cos(2*pi*t)
+z2 <- sin(2*pi*t)
+
+summary(fit <- lm(S~z1+z2-1))
+
+plot.ts(S,lty="dashed")
+lines(fitted(fit))
+
+#Is there significant trend in the sea sufrace temperature?
+#No real trend. Almost 0
+
+#b) Look at periodogram
+I <- abs(fft(S))^2/length(S)
+P <- (4/length(S))*I[1:round(length(S)/2)]
+f <- 0:(round(length(S)/2)-1)/length(S)
+plot(f,P,type="l")
+
+#Once a month for el nno
