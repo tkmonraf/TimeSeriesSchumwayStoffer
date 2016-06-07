@@ -194,4 +194,75 @@ P <- (4/length(S))*I[1:round(length(S)/2)]
 f <- 0:(round(length(S)/2)-1)/length(S)
 plot(f,P,type="l")
 
-#Once a month for el nno
+#Once a month for el nino
+
+
+
+#Q2.10
+
+
+#a)
+
+plot(oil)
+par(new=T)
+plot(gas)
+
+#Do not look stationary as mean looks to increase with time,
+
+#b) the transform might be applied to the data is at looks somewhat
+#logarithmic for most of the time span. This should look more staionary
+
+#c) Plot transforms
+
+log.oil <- log(oil)
+log.gas <- log(gas)
+
+poil <- diff(log.oil)
+pgas <- diff(log.gas)
+
+plot(poil)
+par(new=T)
+plot(pgas)
+
+#Looks much more stationary
+
+#d)Look at ccf
+
+ccf(poil,pgas)
+
+#e)
+lag2.plot(poil,pgas,3)
+
+#f) Explore relationship between oil and gas
+#i) Fit G = a1+a2*I+b1*O+b2*O-1+w
+#Where I = 1 if O>0 and O otherwise
+
+indi <- ifelse(poil<0,0,1)
+mess <- ts.intersect(pgas,poil,poilL = lag(poil,-1),indi)
+summary(fit <- lm(pgas~poil+poilL+indi,data=mess))
+
+#Model looks valud. F-statistics has low p-value
+#All models are outside standard errors, except the intercept
+#Change of gas is lead by a change in oil
+
+#ii) Fit G = a1+a2*I+b1*O+b2*O-1+w
+#Where I = 1 if O>0 and O otherwise
+
+indi2 <- ifelse(poil>0,0,1)
+mess2 <- ts.intersect(pgas,poil,poilL = lag(poil,-1),indi2)
+summary(fit2 <- lm(pgas~poil+poilL+indi2,data=mess2))
+
+#Model looks valud. F-statistics has low p-value
+#All models are outside standard errors, except the intercept
+#Change of gas is lead by a change in oil
+
+#ii) Fit G = a1+a2*I+b1*O+b2*O-1+w
+#Where I = 1 if O>0 and O otherwise
+
+indi3 <- ifelse(poil0,0,1)
+mess3 <- ts.intersect(pgas,poil,poilL = lag(poil,-1),indi3)
+summary(fit3 <- lm(pgas~poil+poilL+indi3,data=mess3))
+
+#Model looks valud. F-statistics has low p-value
+#All models are outside standard errors, except the intercept
+#Change of gas is lead by a change in oil
